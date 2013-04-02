@@ -30,9 +30,11 @@ args = argparser.parse_args()
 
 input_dir = os.path.abspath(args.input)
 output_dir = os.path.abspath(args.output)
-os.makedirs(output_dir,mode=0755)
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir,mode=0755)
 log_dir = os.path.abspath(args.logs)
-os.makedirs(log_dir,mode=0755)
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir,mode=0755)
 
 script_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 

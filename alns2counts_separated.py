@@ -12,7 +12,8 @@ args = argparser.parse_args()
 
 input_dir = os.path.abspath(args.input)
 output_dir = os.path.abspath(args.output)
-os.makedirs(output_dir,mode=0755)
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir,mode=0755)
 reference_count_file = args.refcounts
 
 # load reference counts
