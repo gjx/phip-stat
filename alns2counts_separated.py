@@ -21,6 +21,8 @@ reference_names = []
 reference_counts = []
 with open(reference_count_file,'r') as ip:
     for line in ip:
+        if line.startswith('#'):
+            continue
         data = line.split(',')
         reference_names.append(data[0].strip())
         reference_counts.append(int(data[1]))
