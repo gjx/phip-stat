@@ -5,6 +5,7 @@ import argparse
 
 import numpy as np
 import scipy as sp
+import scipy.special
 import scipy.optimize
 
 argparser = argparse.ArgumentParser(description=None)
@@ -33,22 +34,16 @@ def GP_lambda_likelihood(counts):
 
 def log_GP_pmf(x,theta,lambd):
     log = np.log
-    logP = log(theta) + (x-1)*log(theta+x*lambd) - (theta+x*lambd) - np.sum(log(np.arange(1,x+1)))
+    logP = log(theta) + (x-1)*log(theta+x*lambd) - (theta+x*lambd) - sp.special.gammaln(x + 1)
     return logP
 
 def log_GP_sf(x,theta,lambd):
-    extensions = 200
-    start = x + 1
-    end = x + 100
-    pmf = [log_GP_pmf(y,theta,lambd) for y in xrange(start,end)]
-    while extensions > 0:
-        accum = np.logaddexp.accumulate( pmf )
-        if accum[-1] == accum[-2]: return accum[-1]
-        start = end
-        end += 100
-        pmf += [log_GP_pmf(y,theta,lambd) for y in xrange(start,end)]
-        extensions -= 1
-    # raise ValueError
+    for chunksize in range(4, 8):
+        xs = np.arange(x + 1, x + 10**chunksize)
+        pmf = log_GP_pmf(xs, theta, lambd)
+        accum = np.logaddexp.accumulate(pmf)
+        if accum[-1] == accum[-2]:
+            return accum[-1]
     return np.nan
 
 
